@@ -1,0 +1,37 @@
+﻿@page "/menu"
+
+@attribute [TabItemOption(Text = "菜单管理", Icon = "fa-fw fa-solid fa-laptop")]
+<AdminTable TItem="MenuEntity">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.MenuName"></TableColumn>
+        <TableColumn @bind-Field="@context.Icon"></TableColumn>
+        <TableColumn @bind-Field="@context.Url"></TableColumn>
+        <TableColumn @bind-Field="@context.ParentId">
+            <EditTemplate Context="value">
+                <div class="col-12 col-sm-6 col-md-6">
+                    <SelectTree @bind-Value="value.ParentId" Items="Items"></SelectTree>
+                </div>
+            </EditTemplate>
+        </TableColumn>
+    </TableColumns>
+
+</AdminTable>
+
+@code {
+    private List<TreeViewItem<int>> Items { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var menus = await MenuEntity.Select.ToListAsync();
+        Items.Add(new TreeViewItem<int>(0) { Text = "顶级菜单" });
+        Items.AddRange(CascadingMenu(menus, 0));
+
+    }
+
+    private List<TreeViewItem<int>> CascadingMenu(List<MenuEntity> menuEntities, int parentId) => menuEntities
+    .Where(x => x.ParentId == parentId)
+    .Select(x => new TreeViewItem<int>(x.Id) { Text = x.MenuName, Items = CascadingMenu(menuEntities,x.Id) })
+    .ToList();
+
+
+}
