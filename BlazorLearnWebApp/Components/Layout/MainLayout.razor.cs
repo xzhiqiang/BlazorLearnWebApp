@@ -67,6 +67,7 @@ public partial class MainLayout
         {
             new() { Text = "首页", Icon = "fa-fw fa-solid fa-house", Url = "/" },
             new() { Text = "用户管理", Icon = "fa-fw fa-solid fa-desktop", Url = "user" },
+            new() { Text = "角色管理", Icon = "fa-fw fa-solid fa-desktop", Url = "role" },
             new() { Text = "菜单管理", Icon = "fa-fw fa-solid fa-laptop", Url = "menu" }
         };
     }

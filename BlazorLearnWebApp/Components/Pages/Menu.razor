@@ -1,12 +1,13 @@
 ﻿@page "/menu"
+@inject IDataService<MenuEntity> DataService
 
 @attribute [TabItemOption(Text = "菜单管理", Icon = "fa-fw fa-solid fa-laptop")]
-<AdminTable TItem="MenuEntity">
+<AdminTable TItem="MenuEntity" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync" IsTree="true" TreeNodeConverter="TreeNodeConverter">
     <TableColumns>
         <TableColumn @bind-Field="@context.MenuName"></TableColumn>
         <TableColumn @bind-Field="@context.Icon"></TableColumn>
         <TableColumn @bind-Field="@context.Url"></TableColumn>
-        <TableColumn @bind-Field="@context.ParentId">
+        <TableColumn @bind-Field="@context.ParentId" Visible="false" IsVisibleWhenAdd="true" IsVisibleWhenEdit="true">
             <EditTemplate Context="value">
                 <div class="col-12 col-sm-6 col-md-6">
                     <SelectTree @bind-Value="value.ParentId" Items="Items"></SelectTree>
@@ -19,19 +20,84 @@
 
 @code {
     private List<TreeViewItem<int>> Items { get; set; } = new();
+
+    /// <summary>
+    /// 加载
+    /// </summary>
+    /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await RefreshItems();
+    }
+
+    /// <summary>
+    /// 刷新
+    /// </summary>
+    /// <returns></returns>
+    private async Task RefreshItems()
+    {
+        Items.Clear();
         var menus = await MenuEntity.Select.ToListAsync();
         Items.Add(new TreeViewItem<int>(0) { Text = "顶级菜单" });
         Items.AddRange(CascadingMenu(menus, 0));
-
     }
 
+    /// <summary>
+    /// 二级菜单树
+    /// </summary>
+    /// <param name="menuEntities"></param>
+    /// <param name="parentId"></param>
+    /// <returns></returns>
     private List<TreeViewItem<int>> CascadingMenu(List<MenuEntity> menuEntities, int parentId) => menuEntities
     .Where(x => x.ParentId == parentId)
-    .Select(x => new TreeViewItem<int>(x.Id) { Text = x.MenuName, Items = CascadingMenu(menuEntities,x.Id) })
+    .Select(x => new TreeViewItem<int>(x.Id) { Text = x.MenuName, Items = CascadingMenu(menuEntities, x.Id) })
     .ToList();
 
+    /// <summary> 
+    /// 保存回调
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="agr2"></param>
+    /// <returns></returns>
+    private async Task<bool> OnSaveAsync(MenuEntity arg1, ItemChangedType agr2)
+    {
+        await arg1.SaveAsync();
+        await RefreshItems();
+        return true;
+    }
+
+    /// <summary>
+    /// 删除回调
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <returns></returns>
+    private async Task<bool> OnDeleteAsync(IEnumerable<MenuEntity> arg1)
+    {
+        if (await DataService.DeleteAsync(arg1))
+        {
+            await RefreshItems();
+            return true;
+        }
+        return false;
+    }
+    
+    public Task<IEnumerable<TableTreeNode<MenuEntity>>> TreeNodeConverter(IEnumerable<MenuEntity> arg)
+    {
+        // 构造树状数据结构
+        var ret = BuildTreeNodes(arg, 0);
+        return Task.FromResult(ret);
+
+        IEnumerable<TableTreeNode<MenuEntity>> BuildTreeNodes(IEnumerable<MenuEntity> items, int parentId)
+        {
+            var ret = new List<TableTreeNode<MenuEntity>>();
+            ret.AddRange(items.Where(i => i.ParentId == parentId).Select((menu, index) => new TableTreeNode<MenuEntity>(menu)
+                {
+                    HasChildren = items.Any(x => x.ParentId == menu.Id),
+                    Items = BuildTreeNodes(items, menu.Id)
+                }));
+            return ret;
+        }
+    }
 
 }

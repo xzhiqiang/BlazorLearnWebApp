@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34601.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearnWebApp", "BlazorLearnWebApp\BlazorLearnWebApp.csproj", "{911436BE-362D-4D6E-B22E-FB7F6AAAF6E6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFToBlazor", "WPFToBlazor\WPFToBlazor.csproj", "{6CDAEEE2-FD24-464A-A71C-05C88C7DAE9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{911436BE-362D-4D6E-B22E-FB7F6AAAF6E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{911436BE-362D-4D6E-B22E-FB7F6AAAF6E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{911436BE-362D-4D6E-B22E-FB7F6AAAF6E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CDAEEE2-FD24-464A-A71C-05C88C7DAE9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CDAEEE2-FD24-464A-A71C-05C88C7DAE9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CDAEEE2-FD24-464A-A71C-05C88C7DAE9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CDAEEE2-FD24-464A-A71C-05C88C7DAE9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,4 +13,14 @@
     <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.825" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="Components\Components\EditMenu.cshtml" />
+    <Content Remove="Components\Pages\demo.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\Components\EditMenu.cshtml.cs" />
+    <Compile Remove="Components\Pages\demo.razor.cs" />
+  </ItemGroup>
+
 </Project>

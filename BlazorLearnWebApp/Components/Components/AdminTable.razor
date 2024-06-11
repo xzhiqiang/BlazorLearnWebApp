@@ -1,3 +1,12 @@
 ﻿@typeparam TItem
 
-<Table TItem="TItem" IsBordered="true" IsStriped="true" TableColumns="TableColumns" ShowToolbar="true" ShowExtendButtons="true"></Table>
+<Table TItem="TItem" IsBordered="true" IsStriped="true"
+       TableColumns="TableColumns" ShowToolbar="true" ShowExtendButtons="true"
+       OnSaveAsync="OnSaveAsync"
+       IsTree="IsTree"
+       TreeNodeConverter="TreeNodeConverter"
+       OnDeleteAsync="OnDeleteAsync"
+       BeforeRowButtonTemplate="BeforeRowButtonTemplate"
+       ShowExtendDeleteButtonCallback="ShowExtendDeleteButtonCallback"
+       ShowExtendEditButtonCallback="ShowExtendEditButtonCallback">
+</Table>

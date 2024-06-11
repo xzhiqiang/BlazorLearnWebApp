@@ -1,0 +1,26 @@
+﻿@page "/role"
+@attribute [TabItemOption(Text = "角色管理")]
+@inject DialogService DialogService
+
+<AdminTable TItem="RoleEntity" ShowExtendDeleteButtonCallback="@(entity => entity.RoleName != "管理员")"
+            ShowExtendEditButtonCallback="@(entity => entity.RoleName != "管理员")">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.RoleName"></TableColumn>
+    </TableColumns>
+    <BeforeRowButtonTemplate>
+        <TableCellButton Text="编辑菜单" OnClick="Callback"></TableCellButton>
+    </BeforeRowButtonTemplate>
+</AdminTable>
+
+@code {
+
+    private void Callback()
+    {
+        DialogService.Show(new DialogOption()
+        {
+            Component = BootstrapDynamicComponent.CreateComponent<EditMenu>(),
+             
+        });
+    }
+
+}

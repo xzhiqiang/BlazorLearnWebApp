@@ -1,0 +1,44 @@
+<TreeView TItem="MenuEntity" Items="Items" ShowCheckbox="true"
+          AutoCheckChildren="true" AutoCheckParent="true"
+          ShowIcon="true">
+</TreeView>
+
+@code {
+    private List<TreeViewItem<MenuEntity>> Items { get; set; } = new();
+    [Parameter]
+    public int RoleId { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await RefreshItems();
+    }
+
+    /// <summary>
+    /// 刷新
+    /// </summary>
+    /// <returns></returns>
+    private async Task RefreshItems()
+    {
+        Items.Clear();
+        var menus = await MenuEntity.Select.ToListAsync();
+        Items.AddRange(CascadingMenu(menus, null));
+    }
+
+    /// <summary>
+    /// 二级菜单树
+    /// </summary>
+    /// <param name="menuEntities"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    private List<TreeViewItem<MenuEntity>> CascadingMenu(List<MenuEntity> menuEntities, TreeViewItem<MenuEntity> parent) => menuEntities
+        .Where(x => x.ParentId == (parent?.Value.Id ?? 0))
+        .Select(x =>
+        {
+            var treeViewItem = new TreeViewItem<MenuEntity>(x) { Text = x.MenuName, Icon = x.Icon, IsExpand = true, Parent = parent };
+            treeViewItem.Items = CascadingMenu(menuEntities, treeViewItem);
+            return treeViewItem;
+        })
+        .ToList();
+
+}
