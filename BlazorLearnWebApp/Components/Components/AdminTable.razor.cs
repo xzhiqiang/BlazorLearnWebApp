@@ -32,5 +32,17 @@ namespace BlazorLearnWebApp.Components.Components
         public RenderFragment<TItem>? BeforeRowButtonTemplate { get; set; }
         [Parameter]
         public RenderFragment<TItem>? RowButtonTemplate { get; set; }
+
+        /// <summary>获得/设置 是否分页 默认为 false</summary>
+        [Parameter]
+        public bool IsPagination { get; set; } = true;
+
+        /// <summary>
+        /// 获得/设置 是否为多选模式 默认为 false
+        /// </summary>
+        /// <remarks>此参数在 <see cref="IsExcel"/> 模式下为 true</remarks>
+        [Parameter]
+        public bool IsMultipleSelect { get; set; } = false;
+
     }
 }

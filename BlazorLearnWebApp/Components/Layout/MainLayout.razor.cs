@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using BlazorLearnWebApp.Entity;
 using BootstrapBlazor.Components;
 using Microsoft.AspNetCore.Components;
 
@@ -64,18 +65,39 @@ public partial class MainLayout
         await base.OnInitializedAsync();
 
         _user = (await Authentication.GetAuthenticationStateAsync()).User;
-        
-        // 模拟异步获取菜单数据
-        //await Task.Delay(10);
 
-        Menus = new List<MenuItem>
+        if (_user == null)
         {
-            new() { Text = "首页", Icon = "fa-fw fa-solid fa-house", Url = "/" },
-            new() { Text = "用户管理", Icon = "fa-fw fa-solid fa-desktop", Url = "user" },
-            new() { Text = "角色管理", Icon = "fa-fw fa-solid fa-desktop", Url = "role" },
-            new() { Text = "菜单管理", Icon = "fa-fw fa-solid fa-laptop", Url = "menu" }
-        };
+            return;
+        }
+
+        var roleId = _user.FindFirst(ClaimTypes.Role)?.Value;
+        if (roleId == null)
+        {
+            return;
+        }
+
+        var role = await RoleEntity.Where(x => x.Id == int.Parse(roleId)).IncludeMany(x => x.Menus).FirstAsync();
+        if (role == null || role.Menus == null)
+        {
+            return;
+        }
+
+        Menus = CascadingMenu(role.Menus, 0);
     }
+
+    /// <summary>
+    /// 二级菜单树
+    /// </summary>
+    /// <param name="menuEntities"></param>
+    /// <param name="parentId"></param>
+    /// <returns></returns>
+    private List<MenuItem> CascadingMenu(List<MenuEntity> menuEntities, int parentId) => menuEntities
+        .Where(x => x.ParentId == parentId)
+        .Select(x => new MenuItem
+            { Text = x.MenuName, Items = CascadingMenu(menuEntities, x.Id), Icon = x.Icon, Url = x.Url })
+        .ToList();
+
 
     /// <summary>
     /// 更新组件方法
