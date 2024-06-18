@@ -7,19 +7,21 @@
     <TableColumns>
         <TableColumn @bind-Field="@context.RoleName"></TableColumn>
     </TableColumns>
-    <BeforeRowButtonTemplate>
-        <TableCellButton Text="编辑菜单" OnClick="Callback"></TableCellButton>
+    <BeforeRowButtonTemplate Context="value">
+        <TableCellButton Text="编辑菜单" OnClick="() => EditMenu(value.Id)"></TableCellButton>
     </BeforeRowButtonTemplate>
 </AdminTable>
 
 @code {
 
-    private void Callback()
+    private void EditMenu(int roleId)
     {
-        DialogService.Show(new DialogOption()
+        DialogService.ShowModal<EditMenu>(new ResultDialogOption()
         {
-            Component = BootstrapDynamicComponent.CreateComponent<EditMenu>(),
-             
+            ComponentParameters = new Dictionary<string, object>()
+            {
+                [nameof(Components.EditMenu.RoleId)] = roleId
+            }
         });
     }
 

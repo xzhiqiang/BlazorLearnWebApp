@@ -74,12 +74,9 @@
     /// <returns></returns>
     private async Task<bool> OnDeleteAsync(IEnumerable<MenuEntity> arg1)
     {
-        if (await DataService.DeleteAsync(arg1))
-        {
-            await RefreshItems();
-            return true;
-        }
-        return false;
+        if (!await DataService.DeleteAsync(arg1)) return false;
+        await RefreshItems();
+        return true;
     }
     
     public Task<IEnumerable<TableTreeNode<MenuEntity>>> TreeNodeConverter(IEnumerable<MenuEntity> arg)

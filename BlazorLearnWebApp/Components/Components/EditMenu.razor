@@ -1,3 +1,15 @@
+@implements IResultDialog
+
+@if (RoleEntity == null)
+{
+    <span> loading</span>
+}
+else
+{
+    @RoleEntity.RoleName
+    ;
+}
+
 <TreeView TItem="MenuEntity" Items="Items" ShowCheckbox="true"
           AutoCheckChildren="true" AutoCheckParent="true"
           ShowIcon="true">
@@ -5,11 +17,13 @@
 
 @code {
     private List<TreeViewItem<MenuEntity>> Items { get; set; } = new();
-    [Parameter]
-    public int RoleId { get; set; }
-    
+    [Parameter] public int RoleId { get; set; }
+
+    private RoleEntity? RoleEntity { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        RoleEntity = await RoleEntity.Where(x => x.Id == RoleId).IncludeMany(x => x.Menus).FirstAsync();
         await base.OnInitializedAsync();
         await RefreshItems();
     }
@@ -37,8 +51,36 @@
         {
             var treeViewItem = new TreeViewItem<MenuEntity>(x) { Text = x.MenuName, Icon = x.Icon, IsExpand = true, Parent = parent };
             treeViewItem.Items = CascadingMenu(menuEntities, treeViewItem);
+            if (RoleEntity?.Menus?.Any(y => y.Id == x.Id) == true)
+            {
+                treeViewItem.CheckedState = CheckboxState.Checked;
+            }
+
             return treeViewItem;
         })
         .ToList();
+
+    public async Task OnClose(DialogResult result)
+    {
+        if (result == DialogResult.Yes)
+        {
+            var menus = new List<MenuEntity>();
+            GetMenus(Items.Where(x => x.CheckedState != CheckboxState.UnChecked), menus);
+            RoleEntity.Menus = menus;
+            await RoleEntity.SaveManyAsync(nameof(RoleEntity.Menus));
+        }
+    }
+
+    private void GetMenus(IEnumerable<TreeViewItem<MenuEntity>> treeViewItems, List<MenuEntity> menuEntities)
+    {
+        menuEntities.AddRange(treeViewItems.Select(x => x.Value));
+        foreach (var treeViewItem in treeViewItems)
+        {
+            if (treeViewItem.Items.Any(x => x.CheckedState != CheckboxState.UnChecked))
+            {
+                GetMenus(treeViewItem.Items.Where(x => x.CheckedState != CheckboxState.UnChecked), menuEntities);
+            }
+        }
+    }
 
 }

@@ -27,6 +27,6 @@ namespace BlazorLearnWebApp.Entity
 
 
         [Navigate(ManyToMany = typeof(RoleMenuEntity))]
-        public List<RoleMenuEntity>? Roles { get; set; }
+        public List<RoleEntity>? Roles { get; set; }
     }
 }
