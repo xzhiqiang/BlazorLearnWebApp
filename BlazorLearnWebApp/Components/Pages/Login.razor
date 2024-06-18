@@ -1,0 +1,64 @@
+@page "/Login"
+@using BlazorLearnWebApp.Components.Layout
+@using BlazorLearnWebApp.Vo
+@layout LoginLayout
+@inject AjaxService AjaxService
+@inject SwalService SwalService
+@inject AuthenticationStateProvider Authentication
+@inject NavigationManager NavigationManager
+
+<div class="login-item login-item-gitee">
+    <div class="login-header">
+        <span>登录</span>
+        <div class="login-register">没有账号？<a>点此注册</a></div>
+    </div>
+    <ValidateForm Model="@LoginVo" OnValidSubmit="OnValidSubmit">
+        <BootstrapInput TValue="string" @bind-Value="@LoginVo.UserName" ShowLabel="false" PlaceHolder="请输入账号"/>
+        <BootstrapPassword TValue="string" @bind-Value="@LoginVo.PassWord" ShowLabel="false" PlaceHolder="请输入密码"/>
+        <div class="login-sms">
+            <Checkbox @bind-value="@LoginVo.IsKeep" TValue="bool" ShowLabel="false" ShowAfterLabel="true" DisplayText="记住我"/>
+            <a >短信验证登录</a>
+        </div>
+        <Button Text="登录" ButtonType="ButtonType.Submit" Color="Color.Primary"></Button>
+        <div class="text-center my-4">
+            <a >已有账号，忘记密码</a>
+        </div>
+    </ValidateForm>
+</div>
+
+@code
+{
+    private LoginVo LoginVo { get; set; } = new LoginVo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var user = (await Authentication.GetAuthenticationStateAsync()).User;
+        if (user?.Identity?.IsAuthenticated==true)
+        {
+            NavigationManager.NavigateTo("/");   
+        }
+    }
+
+    private async Task OnValidSubmit(EditContext arg)
+    {
+        var document = await AjaxService.InvokeAsync(new AjaxOption()
+        {
+            Url = "/api/Account/Login",
+            Data = LoginVo
+        });
+        if (document?.RootElement.GetProperty("code").GetInt32() == 2000)
+        {
+            await AjaxService.Goto("/");
+        }
+        else
+        {
+            await SwalService.Show(new SwalOption()
+            {
+                Category = SwalCategory.Error,
+                Content = document?.RootElement.GetProperty("message").GetString() ?? "系统异常",
+                Title = "登录失败"
+            });
+        }
+    }
+}

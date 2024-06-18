@@ -1,15 +1,31 @@
 ﻿@page "/"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Home</PageTitle>
 
 <h1>@hello</h1>
 
 <Button Text="按钮" OnClick="ClickMe"></Button>
+@(_user?.Identity?.IsAuthenticated == true ? "已登录" : "未登录")
 
 @code {
     private string hello = "Hello";
+
     private void ClickMe()
     {
         hello = "Hello World";
     }
+
+    private ClaimsPrincipal _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+    }
+
 }

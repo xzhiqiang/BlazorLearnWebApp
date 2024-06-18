@@ -1,4 +1,5 @@
-﻿using BootstrapBlazor.Components;
+﻿using System.Security.Claims;
+using BootstrapBlazor.Components;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorLearnWebApp.Components.Layout;
@@ -8,6 +9,8 @@ public partial class MainLayout
     private bool IsOpen { get; set; }
 
     private string? Theme { get; set; }
+
+    private ClaimsPrincipal? _user { get; set; }
 
     private string? LayoutClassString => CssBuilder.Default("layout-demo")
         .AddClass(Theme)
@@ -60,6 +63,8 @@ public partial class MainLayout
     {
         await base.OnInitializedAsync();
 
+        _user = (await Authentication.GetAuthenticationStateAsync()).User;
+        
         // 模拟异步获取菜单数据
         //await Task.Delay(10);
 

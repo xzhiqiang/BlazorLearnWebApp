@@ -6,7 +6,7 @@
     <TableColumns>
         <TableColumn @bind-Field="@context.UserName" IsReadonlyWhenEdit="true"></TableColumn>
         <TableColumn @bind-Field="@context.NickName"></TableColumn>
-        @* <TableColumn @bind-Field="@context.Role" Text="角色"></TableColumn> *@
+        <TableColumn @bind-Field="@context.RoleId" Text="角色" Lookup="Roles"></TableColumn>
     </TableColumns>
     <RowButtonTemplate Context="value">
         <TableCellPopConfirmButton Text="重置密码" Content=@($"您是否要重置{value.UserName}的密码") OnConfirm="() =>ResetPassword(value)"></TableCellPopConfirmButton>
@@ -14,6 +14,13 @@
 </AdminTable>
 
 @code {
+    private List<SelectedItem>? Roles { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await  base.OnInitializedAsync();
+        Roles = RoleEntity.Select.ToList(x => new SelectedItem(x.Id.ToString(), x.RoleName!));
+    }
 
     private async Task<bool> OnSaveAsync(UserEntity arg1, ItemChangedType arg2)
     {
