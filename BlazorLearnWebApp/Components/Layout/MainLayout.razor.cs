@@ -2,6 +2,7 @@
 using BlazorLearnWebApp.Entity;
 using BootstrapBlazor.Components;
 using Microsoft.AspNetCore.Components;
+using Console = System.Console;
 
 namespace BlazorLearnWebApp.Components.Layout;
 
@@ -12,6 +13,7 @@ public partial class MainLayout
     private string? Theme { get; set; }
 
     private ClaimsPrincipal? _user { get; set; }
+    private List<string> _authUrl { get; set; } = new List<string>();
 
     private string? LayoutClassString => CssBuilder.Default("layout-demo")
         .AddClass(Theme)
@@ -83,6 +85,7 @@ public partial class MainLayout
             return;
         }
 
+        _authUrl = role.Menus.Select(x => x.Url!).ToList();
         Menus = CascadingMenu(role.Menus, 0);
     }
 
@@ -107,5 +110,17 @@ public partial class MainLayout
     private void ToggleDrawer()
     {
         IsOpen = !IsOpen;
+    }
+
+
+    private Task<bool> OnAuthorizing(string url)
+    {
+        var localPath = new Uri(url).LocalPath;
+        if (_authUrl.Any(x => x == localPath))
+        {
+            return Task.FromResult(true);
+        }
+
+        return Task.FromResult(false);
     }
 }
