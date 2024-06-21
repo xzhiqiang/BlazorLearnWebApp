@@ -1,14 +1,15 @@
 ﻿@using System.Security.Claims
 @inherits LayoutComponentBase
 @inject AuthenticationStateProvider Authentication
-
-
+@inject NavigationManager NavigationManager
 <BootstrapBlazorRoot>
     <CascadingValue Value="this" IsFixed="true">
+        
+        
         <Layout SideWidth="0" IsPage="true" IsFullSide="@IsFullSide" IsFixedHeader="@IsFixedHeader" IsFixedFooter="@IsFixedFooter"
                 ShowFooter="@ShowFooter" ShowGotoTop="true" ShowCollapseBar="true" Menus="@Menus"
                 UseTabSet="@UseTabSet" TabDefaultUrl="layout-page" AdditionalAssemblies="new[] { GetType().Assembly }" class="@LayoutClassString"
-                OnAuthorizing="@OnAuthorizing">
+                OnAuthorizing="OnAuthorizing">
             <NotAuthorized>
                 @if (_user?.Identity?.IsAuthenticated == true)
                 {
@@ -46,6 +47,13 @@
                 </div>
             </Footer>
         </Layout>
+        @{
+            Task<bool> OnAuthorizing(string arg)
+            {
+                return Task.FromResult(false);
+            }
+        }
+
 
         <Drawer Placement="Placement.Right" @bind-IsOpen="@IsOpen" IsBackdrop="true">
             <div class="layout-drawer-body">
@@ -161,3 +169,8 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+<script>
+    window.onhashchange = function (){
+    
+    }
+</script>

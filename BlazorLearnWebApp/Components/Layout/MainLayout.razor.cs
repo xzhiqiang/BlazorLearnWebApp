@@ -2,7 +2,9 @@
 using BlazorLearnWebApp.Entity;
 using BootstrapBlazor.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Console = System.Console;
+
 
 namespace BlazorLearnWebApp.Components.Layout;
 
@@ -11,6 +13,7 @@ public partial class MainLayout
     private bool IsOpen { get; set; }
 
     private string? Theme { get; set; }
+
 
     private ClaimsPrincipal? _user { get; set; }
     private List<string> _authUrl { get; set; } = new List<string>();
@@ -57,11 +60,6 @@ public partial class MainLayout
     /// </summary>
     [Parameter]
     public bool UseTabSet { get; set; } = true;
-
-    /// <summary>
-    /// OnInitializedAsync 方法
-    /// </summary>
-    /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -85,7 +83,12 @@ public partial class MainLayout
             return;
         }
 
+
+
         _authUrl = role.Menus.Select(x => x.Url!).ToList();
+        NavigationManager.LocationChanged += OnLocationChangedAsync;
+        
+
         Menus = CascadingMenu(role.Menus, 0);
     }
 
@@ -98,7 +101,7 @@ public partial class MainLayout
     private List<MenuItem> CascadingMenu(List<MenuEntity> menuEntities, int parentId) => menuEntities
         .Where(x => x.ParentId == parentId)
         .Select(x => new MenuItem
-            { Text = x.MenuName, Items = CascadingMenu(menuEntities, x.Id), Icon = x.Icon, Url = x.Url })
+        { Text = x.MenuName, Items = CascadingMenu(menuEntities, x.Id), Icon = x.Icon, Url = x.Url })
         .ToList();
 
 
@@ -112,9 +115,15 @@ public partial class MainLayout
         IsOpen = !IsOpen;
     }
 
+    private async void OnLocationChangedAsync(object? sender, LocationChangedEventArgs e)
+    {
+        await OnAuthorizing(e.Location);
+    }
+
 
     private Task<bool> OnAuthorizing(string url)
     {
+        var relativeUrl = NavigationManager.ToBaseRelativePath(url);
         var localPath = new Uri(url).LocalPath;
         if (_authUrl.Any(x => x == localPath))
         {

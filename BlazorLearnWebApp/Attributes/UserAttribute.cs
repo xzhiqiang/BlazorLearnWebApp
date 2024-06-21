@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using BlazorLearnWebApp.Entity;
 
-namespace BlazorLearnWebApp.Entity;
+namespace BlazorLearnWebApp.Attributes;
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter)]
 public class UserAttribute : ValidationAttribute

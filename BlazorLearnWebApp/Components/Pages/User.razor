@@ -2,6 +2,9 @@
 @inject IDataService<UserEntity> DataService
 @inject SwalService SwalService
 @attribute [TabItemOption(Text = "用户管理", Icon = "fa-fw fa-solid fa-desktop")]
+@attribute [Authorize(Roles = "管理员")]
+
+
 <AdminTable TItem="UserEntity" OnSaveAsync="OnSaveAsync">
     <TableColumns>
         <TableColumn @bind-Field="@context.UserName" IsReadonlyWhenEdit="true"></TableColumn>
@@ -9,7 +12,7 @@
         <TableColumn @bind-Field="@context.RoleId" Text="角色" Lookup="Roles"></TableColumn>
     </TableColumns>
     <RowButtonTemplate Context="value">
-        <TableCellPopConfirmButton Text="重置密码" Content=@($"您是否要重置{value.UserName}的密码") OnConfirm="() =>ResetPassword(value)"></TableCellPopConfirmButton>
+        <TableCellPopConfirmButton Text="重置密码" Content=@($"您是否要重置{value.UserName}的密码") OnConfirm="() => ResetPassword(value)"></TableCellPopConfirmButton>
     </RowButtonTemplate>
 </AdminTable>
 
@@ -18,7 +21,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await  base.OnInitializedAsync();
+        await base.OnInitializedAsync();
         Roles = RoleEntity.Select.ToList(x => new SelectedItem(x.Id.ToString(), x.RoleName!));
     }
 

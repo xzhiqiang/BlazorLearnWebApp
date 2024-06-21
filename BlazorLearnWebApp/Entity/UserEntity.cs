@@ -1,4 +1,5 @@
-﻿using FreeSql;
+﻿using BlazorLearnWebApp.Attributes;
+using FreeSql;
 using FreeSql.DataAnnotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;

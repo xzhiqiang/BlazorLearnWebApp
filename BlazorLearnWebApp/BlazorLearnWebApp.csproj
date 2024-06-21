@@ -23,8 +23,4 @@
     <Compile Remove="Components\Pages\demo.razor.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-  </ItemGroup>
-
 </Project>
