@@ -86,7 +86,7 @@ public partial class MainLayout
 
 
         _authUrl = role.Menus.Select(x => x.Url!).ToList();
-        NavigationManager.LocationChanged += OnLocationChangedAsync;
+        //NavigationManager.LocationChanged += OnLocationChangedAsync;
         
 
         Menus = CascadingMenu(role.Menus, 0);
@@ -94,7 +94,7 @@ public partial class MainLayout
 
     /// <summary>
     /// 二级菜单树
-    /// </summary>
+    /// </summary
     /// <param name="menuEntities"></param>
     /// <param name="parentId"></param>
     /// <returns></returns>
@@ -115,21 +115,21 @@ public partial class MainLayout
         IsOpen = !IsOpen;
     }
 
-    private async void OnLocationChangedAsync(object? sender, LocationChangedEventArgs e)
-    {
-        await OnAuthorizing(e.Location);
-    }
+    //private async void onlocationchangedasync(object? sender, locationchangedeventargs e)
+    //{
+    //    await onauthorizing(e.location);
+    //}
 
 
-    private Task<bool> OnAuthorizing(string url)
-    {
-        var relativeUrl = NavigationManager.ToBaseRelativePath(url);
-        var localPath = new Uri(url).LocalPath;
-        if (_authUrl.Any(x => x == localPath))
-        {
-            return Task.FromResult(true);
-        }
+    //private task<bool> onauthorizing(string url)
+    //{
+    //    var relativeurl = navigationmanager.tobaserelativepath(url);
+    //    var localpath = new uri(url).localpath;
+    //    if (_authurl.any(x => x == localpath))
+    //    {
+    //        return task.fromresult(true);
+    //    }
 
-        return Task.FromResult(false);
-    }
+    //    return task.fromresult(false);
+    //}
 }

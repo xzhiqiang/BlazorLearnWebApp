@@ -7,6 +7,8 @@ namespace BlazorLearnWebApp.Components.Components
     [CascadingTypeParameter(nameof(TItem))]
     public partial class AdminTable<TItem>where TItem : class ,new()
     {
+        private Table<TItem> _table;
+
         [NotNull]
         [Parameter]
         public RenderFragment<TItem>? TableColumns { get; set; }
@@ -43,6 +45,18 @@ namespace BlazorLearnWebApp.Components.Components
         /// <remarks>此参数在 <see cref="IsExcel"/> 模式下为 true</remarks>
         [Parameter]
         public bool IsMultipleSelect { get; set; } = false;
+        [Parameter] public RenderFragment? TableToolbarTemplate { get; set; }
+        /// <summary>
+        /// 获得/设置 表格 Toolbar 按钮模板
+        /// <para>表格工具栏右侧按钮模板，模板中内容出现在默认按钮后面</para>
+        /// </summary>
+        [Parameter]
+        public RenderFragment? TableExtensionToolbarTemplate { get; set; }
 
+
+        public async Task QueryAsync()
+        {
+            await _table.QueryAsync();
+        }
     }
 }

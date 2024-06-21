@@ -1,6 +1,6 @@
 ﻿@typeparam TItem
 
-<Table TItem="TItem" IsBordered="true" IsStriped="true"
+<Table TItem="TItem" @ref="_table" IsBordered="true" IsStriped="true"
        TableColumns="TableColumns" ShowToolbar="true" ShowExtendButtons="true"
        OnSaveAsync="OnSaveAsync"
        IsTree="IsTree"
@@ -12,5 +12,7 @@
        ShowExtendEditButtonCallback="ShowExtendEditButtonCallback"
        IsPagination="IsPagination"
        IsMultipleSelect="IsMultipleSelect"
-       PageItemsSource="new[] { 10, 20, 50 }">
+       PageItemsSource="new[] { 10, 20, 50 }"
+       TableToolbarTemplate="TableToolbarTemplate"
+       TableExtensionToolbarTemplate="TableExtensionToolbarTemplate">
 </Table>

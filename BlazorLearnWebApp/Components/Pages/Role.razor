@@ -1,5 +1,5 @@
 ﻿@page "/role"
-@attribute [TabItemOption(Text = "角色管理")]
+@attribute [TabItemOption(Text = "权限管理")]
 @inject DialogService DialogService
 
 <AdminTable TItem="RoleEntity" ShowExtendDeleteButtonCallback="@(entity => entity.RoleName != "管理员")"

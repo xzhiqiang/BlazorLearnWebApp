@@ -17,7 +17,7 @@
                 }
                 else
                 {
-                    <Redirect Url="/login"></Redirect>
+                    <Redirect Url="/"></Redirect>
                 }
 
             </NotAuthorized>
@@ -48,8 +48,15 @@
             </Footer>
         </Layout>
         @{
-            Task<bool> OnAuthorizing(string arg)
+            Task<bool> OnAuthorizing(string url)
             {
+                var relativeUrl = NavigationManager.ToBaseRelativePath(url);
+                var localPath = new Uri(url).LocalPath;
+                if (_authUrl.Any(x => x == localPath))
+                {
+                    return Task.FromResult(true);
+                }
+
                 return Task.FromResult(false);
             }
         }
